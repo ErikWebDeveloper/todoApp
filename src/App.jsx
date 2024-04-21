@@ -258,7 +258,7 @@ function App() {
           onChange={handleImport}
         />
       </div>
-      <div className="conatiner m-auto w-75 mt-3 text-center d-flex gap-3">
+      <div className="conatiner m-auto w-75 mt-3 text-center d-flex gap-3 mb-3">
         <button
           className="btn btn-outline-primary w-50 m-auto"
           onClick={descargarLocalStorage}
