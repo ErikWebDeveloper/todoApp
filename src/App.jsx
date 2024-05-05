@@ -107,7 +107,7 @@ function App() {
     // Crear un enlace de descarga
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "localStorage.json"; // Nombre del archivo a descargar
+    a.download = (listName.length !== 0) ? `${listName}.json` : 'no_name.json'; // Nombre del archivo a descargar
 
     // Simular un clic en el enlace para iniciar la descarga
     a.click();
