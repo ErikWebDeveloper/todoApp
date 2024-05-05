@@ -7,9 +7,13 @@ function App() {
     return data ? JSON.parse(data) : placeHolder;
   };
 
-  const [todoList, setTodoList] = useState(obtenerArrayDelLocalStorage("todoList", []));
+  const [todoList, setTodoList] = useState(
+    obtenerArrayDelLocalStorage("todoList", [])
+  );
   const [input, setInput] = useState("");
-  const [listName, setListName] = useState(obtenerArrayDelLocalStorage("titleList", "📝 ToDo List"));
+  const [listName, setListName] = useState(
+    obtenerArrayDelLocalStorage("titleList", "📝 ToDo List")
+  );
 
   const handleChangeInput = (event) => {
     setInput(event.target.value);
@@ -26,7 +30,6 @@ function App() {
     setListName(clearTitle);
     handleUpdateLocalStorage(clearList);
     localStorage.setItem("titleList", JSON.stringify(clearTitle));
-
   };
 
   const handleSubmit = (event) => {
@@ -152,11 +155,11 @@ function App() {
     }
   };
 
-  const handleTitleChange = (event) =>{
+  const handleTitleChange = (event) => {
     const listNameUpdated = event.target.value;
     setListName(listNameUpdated);
     localStorage.setItem("titleList", JSON.stringify(listNameUpdated));
-  }
+  };
 
   const pointerStyle = { cursor: "pointer" };
 
@@ -164,114 +167,120 @@ function App() {
 
   return (
     <>
-      <form
-        className="container m-auto mt-5"
-        onSubmit={handleSubmit}
-        action="#"
-      >
-        <div className="input-group mb-3">
+      <div style={{ width: "100%", maxWidth: "800px", margin: "auto" }}>
+        <form
+          className="container m-auto mt-5"
+          onSubmit={handleSubmit}
+          action="#"
+        >
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Write some task..."
+              aria-label="Write some task..."
+              aria-describedby="button-addon2"
+              onChange={handleChangeInput}
+              value={input}
+            />
+            <button
+              type="submit"
+              className="btn btn-primary"
+              id="button-addon2"
+            >
+              👇
+            </button>
+          </div>
+        </form>
+        <div className="text-center mt-5 m-auto">
           <input
             type="text"
-            className="form-control"
-            placeholder="Write some task..."
-            aria-label="Write some task..."
-            aria-describedby="button-addon2"
-            onChange={handleChangeInput}
-            value={input}
+            className="border-0 fs-3 text-center rounded-4"
+            style={{ backgroundColor: "unset" }}
+            placeholder="🎯 Write your list name..."
+            value={listName}
+            onChange={handleTitleChange}
           />
-          <button type="submit" className="btn btn-primary" id="button-addon2">
-            👇
+        </div>
+        <div
+          className="container border mt-3 rounded"
+          style={{ height: "50vh", overflow: "scroll" }}
+        >
+          {todoList &&
+            todoList.map((item, index) => {
+              return (
+                <div key={`item-${index}`} className="row p-3 border">
+                  <div className="col col-1">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={item.checked}
+                      id={`checkItem-${index}`}
+                      style={pointerStyle}
+                      onChange={() => handleChecked(event, index)}
+                    />
+                  </div>
+                  <label
+                    className="col col-8"
+                    htmlFor={`checkItem-${index}`}
+                    style={pointerStyle}
+                  >
+                    {item.text}
+                  </label>
+                  <div className="col col-3 d-flex" style={pointerStyle}>
+                    <span
+                      className="flex-fill text-center"
+                      onClick={() => handleMoveItem(index, "arriba")}
+                    >
+                      ⬆️
+                    </span>
+                    <span
+                      className="flex-fill text-center"
+                      onClick={() => handleMoveItem(index, "abajo")}
+                    >
+                      ⬇️
+                    </span>
+                    <span
+                      className="flex-fill text-center"
+                      onClick={() => handleDeleteItem(index)}
+                    >
+                      🗑️
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+        <div
+          className="conatiner m-auto w-75 mt-5 text p-3 rounded"
+          style={{ border: "1px solid green", color: "green" }}
+        >
+          <label htmlFor="formFile" className="form-label">
+            ☝️ Upload
+          </label>
+
+          <input
+            className="form-control"
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+          />
+        </div>
+        <div className="conatiner m-auto w-75 mt-3 text-center d-flex gap-3 mb-3">
+          <button
+            className="btn btn-outline-primary w-50 m-auto"
+            onClick={descargarLocalStorage}
+          >
+            ☁️ Download
+          </button>
+
+          <button
+            className="btn btn-outline-danger w-50 m-auto"
+            onClick={handleClearAll}
+          >
+            🧹 Clear All
           </button>
         </div>
-      </form>
-      <div className="text-center mt-5 m-auto">
-        <input
-          type="text"
-          className="border-0 fs-3 text-center rounded-4"
-          style={{ backgroundColor: "unset" }}
-          placeholder="🎯 Write your list name..."
-          value={listName}
-          onChange={handleTitleChange}
-        />
-      </div>
-      <div
-        className="container border mt-3 rounded"
-        style={{ height: "50vh", overflow: "scroll" }}
-      >
-        {todoList &&
-          todoList.map((item, index) => {
-            return (
-              <div key={`item-${index}`} className="row p-3 border">
-                <div className="col col-1">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={item.checked}
-                    id={`checkItem-${index}`}
-                    style={pointerStyle}
-                    onChange={() => handleChecked(event, index)}
-                  />
-                </div>
-                <label
-                  className="col col-8"
-                  htmlFor={`checkItem-${index}`}
-                  style={pointerStyle}
-                >
-                  {item.text}
-                </label>
-                <div className="col col-3 d-flex" style={pointerStyle}>
-                  <span
-                    className="flex-fill text-center"
-                    onClick={() => handleMoveItem(index, "arriba")}
-                  >
-                    ⬆️
-                  </span>
-                  <span
-                    className="flex-fill text-center"
-                    onClick={() => handleMoveItem(index, "abajo")}
-                  >
-                    ⬇️
-                  </span>
-                  <span
-                    className="flex-fill text-center"
-                    onClick={() => handleDeleteItem(index)}
-                  >
-                    🗑️
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-      </div>
-      <div
-        className="conatiner m-auto w-75 mt-5 text p-3 rounded"
-        style={{ border: "1px solid green", color: "green" }}
-      >
-        <label htmlFor="formFile" className="form-label">
-          ☝️ Upload
-        </label>
-
-        <input
-          className="form-control"
-          type="file"
-          accept=".json"
-          onChange={handleImport}
-        />
-      </div>
-      <div className="conatiner m-auto w-75 mt-3 text-center d-flex gap-3 mb-3">
-        <button
-          className="btn btn-outline-primary w-50 m-auto"
-          onClick={descargarLocalStorage}
-        >
-          ☁️ Download
-        </button>
-
-        <button
-          className="btn btn-outline-danger w-50 m-auto"
-          onClick={handleClearAll}
-        >
-          🧹 Clear All
-        </button>
       </div>
     </>
   );
