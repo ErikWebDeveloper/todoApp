@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
+import InputTask from "./components/inputTask";
+import InputListName from "./components/inputListName";
+import ItemsList from "./components/itemsList";
+import CPanel from "./components/cPanel";
+import Footer from "./components/footer";
+
 function App() {
   const obtenerArrayDelLocalStorage = (item, placeHolder) => {
     const data = localStorage.getItem(item);
@@ -107,7 +113,7 @@ function App() {
     // Crear un enlace de descarga
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = (listName.length !== 0) ? `${listName}.json` : 'no_name.json'; // Nombre del archivo a descargar
+    a.download = listName.length !== 0 ? `${listName}.json` : "no_name.json"; // Nombre del archivo a descargar
 
     // Simular un clic en el enlace para iniciar la descarga
     a.click();
@@ -167,127 +173,36 @@ function App() {
 
   return (
     <>
-      <div style={{ width: "100%", maxWidth: "800px", margin: "auto", minHeight: "90vh" }}>
-        <form
-          className="container m-auto mt-5"
-          onSubmit={handleSubmit}
-          action="#"
-        >
-          <div className="input-group mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Write some task..."
-              aria-label="Write some task..."
-              aria-describedby="button-addon2"
-              onChange={handleChangeInput}
-              value={input}
-            />
-            <button
-              type="submit"
-              className="btn btn-primary"
-              id="button-addon2"
-            >
-              👇
-            </button>
-          </div>
-        </form>
-        <div className="text-center mt-5 m-auto">
-          <input
-            type="text"
-            className="border-0 fs-3 text-center rounded-4"
-            style={{ backgroundColor: "unset" }}
-            placeholder="🎯 Write your list name..."
-            value={listName}
-            onChange={handleTitleChange}
-          />
-        </div>
-        <div
-          className="container border mt-3 rounded"
-          style={{ height: "50vh", overflow: "scroll" }}
-        >
-          {todoList &&
-            todoList.map((item, index) => {
-              return (
-                <div key={`item-${index}`} className="row p-3 border">
-                  <div className="col col-1">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={item.checked}
-                      id={`checkItem-${index}`}
-                      style={pointerStyle}
-                      onChange={() => handleChecked(event, index)}
-                    />
-                  </div>
-                  <label
-                    className="col col-8"
-                    htmlFor={`checkItem-${index}`}
-                    style={pointerStyle}
-                  >
-                    {item.text}
-                  </label>
-                  <div className="col col-3 d-flex" style={pointerStyle}>
-                    <span
-                      className="flex-fill text-center"
-                      onClick={() => handleMoveItem(index, "arriba")}
-                    >
-                      ⬆️
-                    </span>
-                    <span
-                      className="flex-fill text-center"
-                      onClick={() => handleMoveItem(index, "abajo")}
-                    >
-                      ⬇️
-                    </span>
-                    <span
-                      className="flex-fill text-center"
-                      onClick={() => handleDeleteItem(index)}
-                    >
-                      🗑️
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-        <div
-          className="conatiner m-auto w-75 mt-5 text p-3 rounded"
-          style={{ border: "1px solid green", color: "green" }}
-        >
-          <label htmlFor="formFile" className="form-label">
-            ☝️ Upload
-          </label>
-
-          <input
-            className="form-control"
-            type="file"
-            accept=".json"
-            onChange={handleImport}
-          />
-        </div>
-        <div className="conatiner m-auto w-75 mt-3 text-center d-flex gap-3 mb-3">
-          <button
-            className="btn btn-outline-primary w-50 m-auto"
-            onClick={descargarLocalStorage}
-          >
-            ☁️ Download
-          </button>
-
-          <button
-            className="btn btn-outline-danger w-50 m-auto"
-            onClick={handleClearAll}
-          >
-            🧹 Clear All
-          </button>
-        </div>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "800px",
+          margin: "auto",
+          minHeight: "90vh",
+        }}
+      >
+        <InputTask
+          handleSubmit={handleSubmit}
+          handleChangeInput={handleChangeInput}
+          input={input}
+        />
+        <InputListName
+          listName={listName}
+          handleTitleChange={handleTitleChange}
+        />
+        <ItemsList
+          todoList={todoList}
+          handleChecked={handleChecked}
+          handleMoveItem={handleMoveItem}
+          handleDeleteItem={handleDeleteItem}
+        />
+        <CPanel
+          handleImport={handleImport}
+          descargarLocalStorage={descargarLocalStorage}
+          handleClearAll={handleClearAll}
+        />
       </div>
-      <footer className="text-center py-3 border-top">
-        <p className="p-0 m-0">
-          ⚡ Developed by:{" "}
-          <a className="link-warning" target="_blank" href="https://github.com/ErikWebDeveloper">ErikWebDeveloper</a>
-        </p>
-      </footer>
+      <Footer/>
     </>
   );
 }
