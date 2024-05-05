@@ -167,7 +167,7 @@ function App() {
 
   return (
     <>
-      <div style={{ width: "100%", maxWidth: "800px", margin: "auto" }}>
+      <div style={{ width: "100%", maxWidth: "800px", margin: "auto", minHeight: "90vh" }}>
         <form
           className="container m-auto mt-5"
           onSubmit={handleSubmit}
@@ -282,6 +282,12 @@ function App() {
           </button>
         </div>
       </div>
+      <footer className="text-center py-3 border-top">
+        <p className="p-0 m-0">
+          ⚡ Developed by:{" "}
+          <a className="link-warning" target="_blank" href="https://github.com/ErikWebDeveloper">ErikWebDeveloper</a>
+        </p>
+      </footer>
     </>
   );
 }
