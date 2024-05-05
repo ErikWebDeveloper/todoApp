@@ -6,6 +6,8 @@ import InputListName from "./components/inputListName";
 import ItemsList from "./components/itemsList";
 import CPanel from "./components/cPanel";
 import Footer from "./components/footer";
+import { Scanner } from "@yudiel/react-qr-scanner";
+
 
 function App() {
   const obtenerArrayDelLocalStorage = (item, placeHolder) => {
@@ -20,6 +22,47 @@ function App() {
   const [listName, setListName] = useState(
     obtenerArrayDelLocalStorage("titleList", "📝 ToDo List")
   );
+
+  const [qrBlob, setQrBlob] = useState("");
+  const apiUrl =
+    "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=";
+
+  const QRGenerator = () => {
+    // Recuperar todos los datos de localStorage
+    const datos = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const clave = localStorage.key(i);
+      datos[clave] = localStorage.getItem(clave);
+    }
+
+    // Convertir los datos a una cadena JSON
+    const datosJson = JSON.stringify(datos);
+    console.log(apiUrl + encodeURI(datosJson));
+
+    fetch(apiUrl + encodeURI(datosJson))
+      .then((response) => {
+        // Comprueba si la respuesta es exitosa
+        if (response.ok) {
+          return response.blob();
+        } else {
+          throw new Error("Error on get QR Code.");
+        }
+      })
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        // Establece el contenido del SVG en el estado
+        setQrBlob(url);
+        console.log(url);
+      })
+      .catch((error) => {
+        console.error("Error on get QR Code:", error);
+      });
+    return () => {
+      if (qrBlob) {
+        URL.revokeObjectURL(qrBlob);
+      }
+    };
+  };
 
   const handleChangeInput = (event) => {
     setInput(event.target.value);
@@ -169,18 +212,11 @@ function App() {
 
   const pointerStyle = { cursor: "pointer" };
 
-  useEffect(() => {}, [todoList]);
+  useEffect(() => {}, [todoList, qrBlob]);
 
   return (
     <>
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "800px",
-          margin: "auto",
-          minHeight: "90vh",
-        }}
-      >
+      
         <InputTask
           handleSubmit={handleSubmit}
           handleChangeInput={handleChangeInput}
@@ -201,8 +237,7 @@ function App() {
           descargarLocalStorage={descargarLocalStorage}
           handleClearAll={handleClearAll}
         />
-      </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }
